@@ -1,9 +1,11 @@
-﻿using cisnerof.Windows.FileArtifact;
+﻿using cisnerof.Properties;
+using cisnerof.Windows.FileArtifact;
 using cisnerof.Windows.RegistryArtifacts;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace cisnerof
 {
@@ -11,10 +13,13 @@ namespace cisnerof
     {
         static void Main(string[] _)
         {
+            File.WriteAllBytes("offreg.x86.dll", Resources.offreg_x86);
+            File.WriteAllBytes("offreg.x64.dll", Resources.offreg_x64);
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.File("job.log", buffered: true)
-                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .WriteTo.Console(Serilog.Events.LogEventLevel.Information, theme: AnsiConsoleTheme.Code)
                 .CreateLogger();
 
             try
@@ -36,9 +41,9 @@ namespace cisnerof
                     new AmCache(),
                     new AppCompatCache(),
                     new BAM(),
+                    new OpenSaveMRU(),
                     new LastVisitedMRU(),
                     new MuiCache(),
-                    new OpenSaveMRU(),
                     new RecentDocs(),
                     new RunMRU(),
                     new Shellbags(),
@@ -62,6 +67,8 @@ namespace cisnerof
             }
             finally
             {
+                FileUtils.EliminateSingleFile("offreg.x86.dll");
+                FileUtils.EliminateSingleFile("offreg.x64.dll");
                 Log.CloseAndFlush();
             }
         }

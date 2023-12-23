@@ -47,10 +47,8 @@ namespace cisnerof.Windows.RegistryArtifacts
                         var subkey = root.OpenSubKey(subkeyName);
                         foreach (var subname2 in subkey.GetSubKeyNames()) // drop all subkeys
                         {
-#if !DEBUG
                             subkey.DeleteSubKeyTree(subname2);
-#endif
-                            Log.Information("Eliminated Amcache hive subkey {key} -> {keyname}", subkey.FullName, subname2);
+                            Log.Debug("Eliminated Amcache hive subkey {key} -> {keyname}", subkey.FullName, subname2);
                         }
                     }
 

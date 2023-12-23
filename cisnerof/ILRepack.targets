@@ -1,17 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <Target Name="ILRepacker" AfterTargets="Build">
 
         <ItemGroup>
-            <!-- <InputAssemblies Include="$(OutputPath)\ExampleAssemblyToMerge1.dll" /> -->
+            <InputAssemblies Include="$(TargetPath)"/>
+            <InputAssemblies Include="$(TargetDir)\OffregLib.dll" />
+            <InputAssemblies Include="$(TargetDir)\Serilog.dll" />
+            <InputAssemblies Include="$(TargetDir)\Serilog.Sinks.Console.dll" />
+            <InputAssemblies Include="$(TargetDir)\Serilog.Sinks.File.dll" />
+            <InputAssemblies Include="$(TargetDir)\System.Buffers.dll" />
+            <InputAssemblies Include="$(TargetDir)\System.Diagnostics.DiagnosticSource.dll" />
+            <InputAssemblies Include="$(TargetDir)\System.Memory.dll" />
+            <InputAssemblies Include="$(TargetDir)\System.Numerics.Vectors.dll" />
+            <InputAssemblies Include="$(TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" />
         </ItemGroup>
 
         <ILRepack
             Parallel="true"
             Internalize="true"
             InputAssemblies="@(InputAssemblies)"
-            TargetKind="Dll"
-            OutputFile="$(OutputPath)\$(AssemblyName)-final.dll"
+            TargetKind="SameAsPrimaryAssembly"
+            OutputFile="$(TargetDir)\$(AssemblyName)-Final.exe"
     />
 
     </Target>

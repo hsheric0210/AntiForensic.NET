@@ -27,7 +27,7 @@ namespace cisnerof
 #if !DEBUG
                         key.DeleteValue(value);
 #endif
-                        Log.Information("Eliminated registry value {key} -> {value}", key.Name, value);
+                        Log.Debug("Eliminated registry value {key} -> {value}", key.Name, value);
                     }
                     catch (Exception ex)
                     {
