@@ -18,6 +18,7 @@ Once executed, it will automatically erase:
 * ~~Start menu links~~ (disabled)
 * AmCache (delete ALL entries under 'InventoryApplication*' keys)
 * AppCompatCache, ShimCache
+* AppCompatFlags Store
 * BAM (Background Activity Moderator) Logs
 * Explorer Last-visited MRU
 * MUI cache

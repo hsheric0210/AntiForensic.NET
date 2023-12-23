@@ -41,6 +41,7 @@ namespace cisnerof
                     //new StartMenuLnk(),
                     new AmCache(),
                     new AppCompatCache(),
+                    new AppCompatFlags(),
                     new BAM(),
                     new OpenSaveMRU(),
                     new LastVisitedMRU(),
