@@ -1,4 +1,5 @@
 ﻿using cisnerof.Properties;
+using cisnerof.Windows;
 using cisnerof.Windows.FileArtifact;
 using cisnerof.Windows.RegistryArtifacts;
 using Serilog;
@@ -49,6 +50,7 @@ namespace cisnerof
                     new Shellbags(),
                     new UserAssist(),
                     new UsnJrnl(),
+                    new EventLog()
                 };
 
                 foreach (var job in list)

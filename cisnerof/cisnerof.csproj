@@ -100,6 +100,7 @@
     <Compile Include="RegUtils.cs" />
     <Compile Include="ICleaner.cs" />
     <Compile Include="FileUtils.cs" />
+    <Compile Include="Windows\EventLog.cs" />
     <Compile Include="Windows\FileArtifact\ActivitiesCache.cs" />
     <Compile Include="Windows\FileArtifact\PCA.cs" />
     <Compile Include="Windows\FileArtifact\CrashDumps.cs" />

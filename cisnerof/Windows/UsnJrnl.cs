@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace cisnerof.Windows.FileArtifact
+namespace cisnerof.Windows
 {
     internal class UsnJrnl : ICleaner
     {
