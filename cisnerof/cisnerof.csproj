@@ -104,6 +104,7 @@
     <Compile Include="Windows\FileArtifact\ActivitiesCache.cs" />
     <Compile Include="Windows\FileArtifact\PCA.cs" />
     <Compile Include="Windows\FileArtifact\CrashDumps.cs" />
+    <Compile Include="Windows\RegistryArtifacts\AppCompatFlags.cs" />
     <Compile Include="Windows\UsnJrnl.cs" />
     <Compile Include="Windows\FileArtifact\RecycleBin.cs" />
     <Compile Include="Windows\FileArtifact\QuickLaunchLnk.cs" />
