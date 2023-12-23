@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
@@ -8,9 +7,6 @@ namespace cisnerof.Windows.FileArtifact
     {
         public string Name => "AppCompat PCA";
 
-        public int RunCleaner()
-        {
-            return FileUtils.EliminateFolderSubitems(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "AppCompat", "PCA"), "*.txt");
-        }
+        public int RunCleaner() => FileUtils.EliminateFolderSubitems(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "AppCompat", "PCA"), "*.txt");
     }
 }

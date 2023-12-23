@@ -7,6 +7,12 @@ namespace cisnerof.Windows.RegistryArtifacts
     {
         public string Name => "MuiCache";
 
-        public int RunCleaner() => RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "CurrentVersion", "Explorer", "ComDlg32", "LastVisitedPidlMRU")));
+        public int RunCleaner()
+        {
+            var count = 0;
+            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "Local Settings", "MuiCache")));
+            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "MuiCache")));
+            return count;
+        }
     }
 }

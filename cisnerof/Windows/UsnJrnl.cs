@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Serilog;
 using System.Diagnostics;
 using System.IO;
 
@@ -22,7 +22,12 @@ namespace cisnerof.Windows.FileArtifact
                 var procinfo = new ProcessStartInfo();
                 procinfo.FileName = "fsutil";
                 procinfo.Arguments = "usn deleteJournal /D " + drive.RootDirectory.FullName.TrimEnd(Path.DirectorySeparatorChar);
+#if DEBUG
+                Log.Information("fsutil execute: " + procinfo.Arguments);
+#else
                 Process.Start(procinfo).WaitForExit();
+#endif
+                Log.Debug("Cleared UsnJrnl of {drive}", drive.RootDirectory);
                 count++;
             }
 

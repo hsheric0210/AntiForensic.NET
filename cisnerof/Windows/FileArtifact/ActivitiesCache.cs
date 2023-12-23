@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
@@ -18,6 +19,8 @@ namespace cisnerof.Windows.FileArtifact
             {
                 if (!File.Exists(Path.Combine(subdir.FullName, "ActivitiesCache.db")))
                     continue;
+
+                Log.Debug("Found valid subdirectory: {dir}", subdir);
                 count += FileUtils.EliminateFolderSubitems(subdir.FullName);
             }
 

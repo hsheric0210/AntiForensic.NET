@@ -19,7 +19,7 @@ namespace cisnerof.Windows.FileArtifact
 #if !DEBUG
                 layoutIni.Delete();
 #endif
-                Log.Debug("Deleted prefetch layout.ini");
+                Log.Information("Deleted prefetch layout.ini");
                 count++;
             }
 

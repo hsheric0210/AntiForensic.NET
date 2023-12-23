@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -21,7 +22,10 @@ namespace cisnerof.Windows.FileArtifact
             var proc = Process.Start(process);
             proc.WaitForExit();
 
+#if !DEBUG
             File.Delete(path);
+#endif
+            Log.Information("Eliminated SRU DB {path}", path);
 
             process = new ProcessStartInfo();
             process.FileName = "sc.exe";

@@ -7,6 +7,6 @@ namespace cisnerof.Windows.FileArtifact
     {
         public string Name => "AppCompat Installation Logs";
 
-        public int RunCleaner() => FileUtils.EliminateFolderSubitems(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "AppCompat", "Programs", "Install", "*.txt"));
+        public int RunCleaner() => FileUtils.EliminateFolderSubitems(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "AppCompat", "Programs", "Install"), "*.txt");
     }
 }

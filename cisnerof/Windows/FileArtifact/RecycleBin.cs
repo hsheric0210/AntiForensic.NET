@@ -1,5 +1,4 @@
-﻿using Serilog;
-using System;
+﻿using System;
 using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
@@ -20,9 +19,7 @@ namespace cisnerof.Windows.FileArtifact
                 if (bin.Exists)
                 {
                     foreach (var subdir in bin.EnumerateDirectories())
-                    {
                         FileUtils.EliminateFolderSubitems(subdir.FullName, DesktopIniFilter);
-                    }
                 }
             }
             return count;

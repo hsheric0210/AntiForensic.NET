@@ -14,7 +14,7 @@ namespace cisnerof.Windows.FileArtifact
             if (file.Exists)
             {
                 //file.Delete();
-                Log.Debug("Eliminated RecentFileCache.bcf");
+                Log.Information("Eliminated RecentFileCache.bcf");
                 return 1;
             }
             return 0;

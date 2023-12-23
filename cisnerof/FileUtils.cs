@@ -56,7 +56,7 @@ namespace cisnerof
 #if !DEBUG
                         item.Delete();
 #endif
-                        Log.Debug("Eliminated folder sub-item {path}", item);
+                        Log.Information("Eliminated folder sub-item {path}", item);
                     }
                     catch (Exception ex)
                     {
@@ -94,7 +94,7 @@ namespace cisnerof
 #if !DEBUG
                         item.Delete();
 #endif
-                        Log.Debug("Eliminated folder sub-item {path}", item);
+                        Log.Information("Eliminated folder sub-item {path}", item);
                     }
                     catch (Exception ex)
                     {

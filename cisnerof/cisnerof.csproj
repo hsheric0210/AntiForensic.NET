@@ -97,10 +97,10 @@
     <Compile Include="FileUtils.cs" />
     <Compile Include="Windows\FileArtifact\ActivitiesCache.cs" />
     <Compile Include="Windows\FileArtifact\PCA.cs" />
-    <Compile Include="Windows\FileArtifact\UsnJrnl.cs" />
+    <Compile Include="Windows\FileArtifact\CrashDumps.cs" />
+    <Compile Include="Windows\UsnJrnl.cs" />
     <Compile Include="Windows\FileArtifact\RecycleBin.cs" />
     <Compile Include="Windows\FileArtifact\QuickLaunchLnk.cs" />
-    <Compile Include="Windows\FileArtifact\DesktopLnk.cs" />
     <Compile Include="Windows\FileArtifact\Prefetch.cs" />
     <Compile Include="Windows\FileArtifact\AppCompatInstall.cs" />
     <Compile Include="Windows\FileArtifact\IconCache.cs" />

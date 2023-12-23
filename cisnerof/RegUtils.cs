@@ -1,8 +1,6 @@
 ﻿using Microsoft.Win32;
 using Serilog;
 using System;
-using System.IO;
-using System.Linq;
 
 namespace cisnerof
 {
@@ -29,7 +27,7 @@ namespace cisnerof
 #if !DEBUG
                         key.DeleteValue(value);
 #endif
-                        Log.Debug("Eliminated registry value {key} -> {value}", key.Name, value);
+                        Log.Information("Eliminated registry value {key} -> {value}", key.Name, value);
                     }
                     catch (Exception ex)
                     {

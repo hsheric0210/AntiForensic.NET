@@ -22,7 +22,11 @@ namespace cisnerof.Windows.RegistryArtifacts
             try
             {
                 File.Copy(path, copyName);
+                Log.Information("Amcache hive copied to: {path}", copyName);
+
+#if !DEBUG
                 File.Delete(path);
+#endif
             }
             catch (Exception ex)
             {
@@ -46,11 +50,17 @@ namespace cisnerof.Windows.RegistryArtifacts
 #if !DEBUG
                             subkey.DeleteSubKeyTree(subname2);
 #endif
-                            Log.Debug("Eliminated Amcache hive subkey {key} -> {keyname}", subkey.FullName, subname2);
+                            Log.Information("Eliminated Amcache hive subkey {key} -> {keyname}", subkey.FullName, subname2);
                         }
                     }
 
+#if DEBUG
+                    var copyName2 = Path.GetRandomFileName();
+                    hive.SaveHive(copyName2, 6u, 1u); // Windows 7 ...?
+                    Log.Information("The hive re-saved to: {path}", copyName2);
+#else
                     hive.SaveHive(path, 6u, 1u); // Windows 7 ...?
+#endif
                 }
             }
             catch (Exception ex)
