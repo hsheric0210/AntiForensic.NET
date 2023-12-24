@@ -3,8 +3,14 @@ using System.IO;
 
 namespace cisnerof.Windows.RegistryArtifacts
 {
+    /// <summary>
+    /// https://www.forensic-cheatsheet.com/Projects/Forensic-Cheatsheet/KR/Artifact/Shellbag
+    /// http://www.forensic-artifacts.com/windows-forensics/shellbags
+    /// </summary>
     internal class Shellbags : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.Shellbags;
+
         public string Name => "Explorer Shellbags";
 
         public int RunCleaner()
@@ -30,7 +36,7 @@ namespace cisnerof.Windows.RegistryArtifacts
                 return;
 
 #if !DEBUG
-            key.SetValue("1", new byte[] { 0xAA, 0xBB, 0xCC, 0, 11, 0x22, 0x33 });
+            key.SetValue("1", new byte[] { 0xAA, 0xBB, 0xCC, 0x11, 0x22, 0x33 });
 #endif
         }
     }

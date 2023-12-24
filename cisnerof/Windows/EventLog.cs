@@ -5,15 +5,19 @@ namespace cisnerof.Windows
 {
     internal class EventLog : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.EventLog;
+
         public string Name => "Event Log";
 
         public int RunCleaner()
         {
-            var procinfo = new ProcessStartInfo();
-            procinfo.FileName = "WEVTUTIL.EXE";
-            procinfo.Arguments = "ENUM-LOGS";
-            procinfo.RedirectStandardOutput = true;
-            procinfo.UseShellExecute = false;
+            var procinfo = new ProcessStartInfo
+            {
+                FileName = "WEVTUTIL.EXE",
+                Arguments = "ENUM-LOGS",
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
             var proc = Process.Start(procinfo);
             var logs = proc.StandardOutput.ReadToEnd().Split('\n');
             proc.WaitForExit();
@@ -26,12 +30,16 @@ namespace cisnerof.Windows
 
                 Log.Debug("Clearing event log: {log}", logname);
 
-                var info = new ProcessStartInfo();
-                info.FileName = "WEVTUTIL.EXE";
-                info.Arguments = "CLEAR-LOG \"" + logname + '\"';
+                var info = new ProcessStartInfo
+                {
+                    FileName = "WEVTUTIL.EXE",
+                    Arguments = "CLEAR-LOG \"" + logname + '\"'
+                };
 
 #if !DEBUG
-                Process.Start(info); // no waiting. it will execute in parallel
+                var proc2 = Process.Start(info); // no waiting. it will execute in parallel
+                proc2.WaitForExit();
+                Log.Debug("Event log cleaner for {log} exit: {code}", proc2.ExitCode);
 #endif
             }
 

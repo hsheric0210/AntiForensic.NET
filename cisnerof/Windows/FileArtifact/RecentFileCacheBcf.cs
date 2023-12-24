@@ -4,8 +4,13 @@ using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
 {
+    /// <summary>
+    /// https://www.forensic-cheatsheet.com/Projects/Forensic-Cheatsheet/KR/Artifact/Amcache
+    /// </summary>
     internal class RecentFileCacheBcf : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.RecentFileCacheBcf;
+
         public string Name => "RecentFileCache.bcf";
 
         public int RunCleaner()
@@ -13,7 +18,9 @@ namespace cisnerof.Windows.FileArtifact
             var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "AppCompat", "Programs", "RecentFileCache.bcf"));
             if (file.Exists)
             {
-                //file.Delete();
+#if !DEBUG
+                file.Delete();
+#endif
                 Log.Information("Eliminated RecentFileCache.bcf");
                 return 1;
             }

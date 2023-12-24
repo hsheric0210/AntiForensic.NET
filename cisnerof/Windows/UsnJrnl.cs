@@ -6,7 +6,9 @@ namespace cisnerof.Windows
 {
     internal class UsnJrnl : ICleaner
     {
-        public string Name => "UsnJrnl Cleaner";
+        public CleanerTypes Type => CleanerTypes.UsnJrnl;
+
+        public string Name => "Usn Journal Cleaner";
 
         public int RunCleaner()
         {

@@ -3,8 +3,13 @@ using System.IO;
 
 namespace cisnerof.Windows.RegistryArtifacts
 {
+    /// <summary>
+    /// http://www.forensic-artifacts.com/windows-forensics/muicache
+    /// </summary>
     internal class MuiCache : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.MuiCache;
+
         public string Name => "MuiCache";
 
         public int RunCleaner()

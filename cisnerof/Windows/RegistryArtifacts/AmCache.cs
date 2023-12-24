@@ -7,9 +7,13 @@ namespace cisnerof.Windows.RegistryArtifacts
 {
     /// <summary>
     /// Mount AmCache.hve, Delete all subkeys of 'InventoryApplication*' keys, Unmount.
+    /// http://www.forensic-artifacts.com/windows-forensics/amcache
+    /// https://www.forensic-cheatsheet.com/Projects/Forensic-Cheatsheet/KR/Artifact/Amcache
     /// </summary>
     internal class AmCache : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.Amcache;
+
         public string Name => "Amcache.hve";
 
         public int RunCleaner()
@@ -53,7 +57,7 @@ namespace cisnerof.Windows.RegistryArtifacts
                     }
 
 #if DEBUG
-                    var copyName2 = Path.GetRandomFileName();
+                    var copyName2 = Path.GetRandomFileName() + ".Amcache.hve";
                     hive.SaveHive(copyName2, 6u, 1u); // Windows 7 ...?
                     Log.Information("The hive re-saved to: {path}", copyName2);
 #else

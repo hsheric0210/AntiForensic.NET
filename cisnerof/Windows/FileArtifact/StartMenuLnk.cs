@@ -4,8 +4,13 @@ using System.Linq;
 
 namespace cisnerof.Windows.FileArtifact
 {
+    /// <summary>
+    /// http://www.forensic-artifacts.com/windows-forensics/linkfile
+    /// </summary>
     internal class StartMenuLnk : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.StartMenuLnk;
+
         private static readonly string[] blacklistedFolders = new string[] {
             "Accessibility", // Windows 접근성
             "Accessories", // Windows 보조프로그램

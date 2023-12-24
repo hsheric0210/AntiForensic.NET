@@ -4,9 +4,14 @@ using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
 {
+    /// <summary>
+    /// https://www.forensic-cheatsheet.com/Projects/Forensic-Cheatsheet/KR/Artifact/Prefetch+%26+Superfetch
+    /// </summary>
     internal class Prefetch : ICleaner
     {
-        public string Name => "Windows Prefetch Files";
+        public CleanerTypes Type => CleanerTypes.Prefetch;
+
+        public string Name => "Windows Prefetch, Superfetch Files";
 
         public int RunCleaner()
         {

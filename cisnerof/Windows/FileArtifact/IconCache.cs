@@ -3,8 +3,13 @@ using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
 {
+    /// <summary>
+    /// https://www.forensic-cheatsheet.com/Projects/Forensic-Cheatsheet/KR/Artifact/ThumbCache++IconCache
+    /// </summary>
     internal class IconCache : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.IconCache;
+
         public string Name => "Exploer Icon Cache";
 
         public int RunCleaner()

@@ -60,9 +60,6 @@
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.3.1.1\lib\net471\Serilog.dll</HintPath>
     </Reference>
-    <Reference Include="Serilog.Sinks.Console, Version=5.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.Console.5.0.1\lib\net471\Serilog.Sinks.Console.dll</HintPath>
-    </Reference>
     <Reference Include="Serilog.Sinks.File, Version=5.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.File.5.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
     </Reference>
@@ -92,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CleanerTypes.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -100,11 +98,15 @@
     <Compile Include="RegUtils.cs" />
     <Compile Include="ICleaner.cs" />
     <Compile Include="FileUtils.cs" />
+    <Compile Include="ServiceUtils.cs" />
     <Compile Include="Windows\EventLog.cs" />
     <Compile Include="Windows\FileArtifact\ActivitiesCache.cs" />
+    <Compile Include="Windows\FileArtifact\SearchIndex.cs" />
+    <Compile Include="Windows\FileArtifact\WER.cs" />
     <Compile Include="Windows\FileArtifact\PCA.cs" />
     <Compile Include="Windows\FileArtifact\CrashDumps.cs" />
     <Compile Include="Windows\RegistryArtifacts\AppCompatFlags.cs" />
+    <Compile Include="Windows\RegistryArtifacts\FeatureUsage.cs" />
     <Compile Include="Windows\UsnJrnl.cs" />
     <Compile Include="Windows\FileArtifact\RecycleBin.cs" />
     <Compile Include="Windows\FileArtifact\QuickLaunchLnk.cs" />

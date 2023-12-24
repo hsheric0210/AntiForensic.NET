@@ -35,7 +35,7 @@ Once executed, it will automatically erase:
 * http://www.forensic-artifacts.com/windows-forensics
 * https://yum-history.tistory.com/286
 * https://aawjej.tistory.com/197
-* https://m.blog.naver.com/ksil_/222704269742
+* https://blog.naver.com/ksil_/222704269742
 
 ## Related repositories
 

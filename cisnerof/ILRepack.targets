@@ -6,7 +6,6 @@
             <InputAssemblies Include="$(TargetPath)"/>
             <InputAssemblies Include="$(TargetDir)\OffregLib.dll" />
             <InputAssemblies Include="$(TargetDir)\Serilog.dll" />
-            <InputAssemblies Include="$(TargetDir)\Serilog.Sinks.Console.dll" />
             <InputAssemblies Include="$(TargetDir)\Serilog.Sinks.File.dll" />
             <InputAssemblies Include="$(TargetDir)\System.Buffers.dll" />
             <InputAssemblies Include="$(TargetDir)\System.Diagnostics.DiagnosticSource.dll" />

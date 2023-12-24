@@ -4,8 +4,13 @@ using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
 {
+    /// <summary>
+    /// http://www.forensic-artifacts.com/windows-forensics/timeline
+    /// </summary>
     internal class ActivitiesCache : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.ActivitiesCache;
+
         public string Name => "ConnectedDevicesPlatform ActivitiesCache.db (Timeline)";
 
         public int RunCleaner()

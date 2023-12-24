@@ -3,8 +3,13 @@ using System.IO;
 
 namespace cisnerof.Windows.RegistryArtifacts
 {
+    /// <summary>
+    /// http://www.forensic-artifacts.com/windows-forensics/userassist
+    /// </summary>
     internal class UserAssist : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.UserAssist;
+
         public string Name => "Explorer UserAssist";
 
         public int RunCleaner()

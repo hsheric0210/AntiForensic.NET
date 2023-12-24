@@ -6,9 +6,12 @@ namespace cisnerof.Windows.RegistryArtifacts
 {
     /// <summary>
     /// https://www.sevenforums.com/general-discussion/384201-appcompatcache-registry-windows-7-a.html
+    /// http://www.forensic-artifacts.com/windows-forensics/shimcache
     /// </summary>
     internal class AppCompatCache : ICleaner
     {
+        public CleanerTypes Type => CleanerTypes.AppCompatCache;
+
         public string Name => "Application Compatibility Cache (AppCompatCache) & ShimCache";
 
         [DllImport("kernel32.dll")]

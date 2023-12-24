@@ -5,9 +5,14 @@ using System.IO;
 
 namespace cisnerof.Windows.FileArtifact
 {
+    /// <summary>
+    /// https://www.forensic-cheatsheet.com/Projects/Forensic-Cheatsheet/KR/Artifact/SRUM
+    /// </summary>
     internal class SRUM : ICleaner
     {
-        public string Name => "SRU Monitor";
+        public CleanerTypes Type => CleanerTypes.SRUM;
+
+        public string Name => "System Resource Utilization Monitor";
 
         public int RunCleaner()
         {
@@ -15,25 +20,14 @@ namespace cisnerof.Windows.FileArtifact
             if (!File.Exists(path))
                 return 0;
 
-            var process = new ProcessStartInfo();
-            process.FileName = "sc.exe";
-            process.Arguments = "stop DPS"; // Diagnostic Policy Service
-            process.WindowStyle = ProcessWindowStyle.Hidden;
-            var proc = Process.Start(process);
-            proc.WaitForExit();
+            ServiceUtils.StopService("DPS");
 
 #if !DEBUG
             File.Delete(path);
 #endif
             Log.Information("Eliminated SRU DB {path}", path);
 
-            process = new ProcessStartInfo();
-            process.FileName = "sc.exe";
-            process.Arguments = "start DPS"; // Diagnostic Policy Service
-            process.WindowStyle = ProcessWindowStyle.Hidden;
-            proc = Process.Start(process);
-            proc.WaitForExit();
-
+            ServiceUtils.StartService("DPS");
             return 1;
         }
     }
