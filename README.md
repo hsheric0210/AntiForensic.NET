@@ -1,6 +1,6 @@
-# cisnerof - Windows anti-forensics made easy
+# cisnerof :: Windows anti-forensics made easy
 
-This simple and lightweight utility will help you eliminate your *sus* logs left in your computor.
+This simple and lightweight utility will eliminate *all* logs from your computor.
 
 Once executed, it will automatically erase:
 
@@ -10,12 +10,12 @@ Once executed, it will automatically erase:
 * Explorer Icon Caches
 * Program Compatibility Assistant Logs
 * All prefetch, superfetch files
-* ~~Quick launch links~~ (disabled)
+* Quick launch links (disabled by default)
 * RecentFileCache.bcf
 * Recent Items (Recent/*.lnk, Jumplist)
 * Recycle Bin
 * SRUM (SRUDB.dat)
-* ~~Start menu links~~ (disabled)
+* Start menu links (disabled by default)
 * AmCache (delete ALL entries under 'InventoryApplication*' keys)
 * AppCompatCache, ShimCache
 * AppCompatFlags Store
@@ -29,6 +29,13 @@ Once executed, it will automatically erase:
 * UserAssist
 * Event logs
 * UsnJrnl
+
+TODO:
+
+* [ ] Powershell command logs
+* [ ] MFT log ($Logs, $Bitmap)
+* [ ] Various program 'Recent Files' registry, files (mostly 'Unarchivers' such as 7-zip, Bandizip, etc.)
+
 
 ## Documents (Mostly Korean)
 

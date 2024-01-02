@@ -15,7 +15,7 @@ namespace cisnerof
         static void Main(string[] args)
         {
             if (args.Length == 0 || !long.TryParse(args[0], NumberStyles.AllowHexSpecifier, NumberFormatInfo.InvariantInfo, out var flags))
-                flags = long.MaxValue;
+                flags = long.MaxValue & ~(long)CleanerTypes.QuickLaunchLnk & ~(long)CleanerTypes.StartMenuLnk; // disabled by default
 
             File.WriteAllBytes("offreg.x86.dll", Resources.offreg_x86);
             File.WriteAllBytes("offreg.x64.dll", Resources.offreg_x64);
