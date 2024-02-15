@@ -1,5 +1,4 @@
-﻿using AntiForensicLib;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System.IO;
 
 namespace AntiForensicLib.Windows.RegistryArtifacts
@@ -20,7 +19,7 @@ namespace AntiForensicLib.Windows.RegistryArtifacts
             foreach (var subkey in key.GetSubKeyNames())
             {
                 Facade.Logger.Debug(string.Format("Found valid bam UserSettings SID subkey: {0}", subkey));
-                count += RegUtils.EliminateKeySubentries(key.OpenSubKey(subkey), FilterFunc);
+                count += RegistryUtils.EliminateKeySubentries(key.OpenSubKey(subkey), FilterFunc);
             }
 
             return count;

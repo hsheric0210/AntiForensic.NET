@@ -4,6 +4,7 @@
 
         <ItemGroup>
             <InputAssemblies Include="$(TargetPath)"/>
+            <InputAssemblies Include="$(TargetDir)\AntiForensicLib.dll" />
             <InputAssemblies Include="$(TargetDir)\OffregLib.dll" />
             <InputAssemblies Include="$(TargetDir)\Serilog.dll" />
             <InputAssemblies Include="$(TargetDir)\Serilog.Sinks.File.dll" />

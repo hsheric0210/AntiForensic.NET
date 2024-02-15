@@ -1,5 +1,4 @@
-﻿using AntiForensicLib;
-using System;
+﻿using System;
 using System.IO;
 
 namespace AntiForensicLib.Windows.FileArtifact

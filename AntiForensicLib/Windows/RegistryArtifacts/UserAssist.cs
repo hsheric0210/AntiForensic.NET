@@ -17,7 +17,7 @@ namespace AntiForensicLib.Windows.RegistryArtifacts
             var count = 0;
             var key = Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "CurrentVersion", "Explorer", "UserAssist"));
             foreach (var subkey in key.GetSubKeyNames())
-                count += RegUtils.EliminateKeySubentriesRecursive(key.OpenSubKey(Path.Combine(subkey, "Count")));
+                count += RegistryUtils.EliminateKeySubentriesRecursive(key.OpenSubKey(Path.Combine(subkey, "Count")));
 
             return count;
         }

@@ -1,12 +1,11 @@
-﻿using AntiForensicLib;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 
 namespace AntiForensicLib
 {
     // 참고: HKCU = HKU\\S-1-5-9-... (현재 유저 SID)
     // https://www.tenforums.com/general-support/75526-hkcu-hku-registry-records.html
-    internal static class RegUtils
+    internal static class RegistryUtils
     {
         public static int EliminateKeySubentries(RegistryKey key, Func<string, bool> filter = null)
         {

@@ -16,12 +16,12 @@ namespace AntiForensicLib.Windows.RegistryArtifacts
         public int RunCleaner()
         {
             var count = 0;
-            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "Bags")));
-            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "BagMRU")));
-            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "WoW6432Node", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "Bags")));
-            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "WoW6432Node", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "BagMRU")));
-            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "Shell", "Bags")));
-            count += RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "Shell", "BagMRU")));
+            count += RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "Bags")));
+            count += RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "BagMRU")));
+            count += RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "WoW6432Node", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "Bags")));
+            count += RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "WoW6432Node", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "BagMRU")));
+            count += RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "Shell", "Bags")));
+            count += RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "Shell", "BagMRU")));
 
             PutDefaultMRU(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "BagMRU")));
             PutDefaultMRU(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Classes", "WoW6432Node", "Local Settings", "Software", "Microsoft", "Windows", "Shell", "BagMRU")));

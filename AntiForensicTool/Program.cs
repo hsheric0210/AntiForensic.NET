@@ -1,5 +1,4 @@
 ﻿using AntiForensicLib;
-using cisnerof.Properties;
 using Serilog;
 using System;
 using System.Globalization;
@@ -14,8 +13,7 @@ namespace AntiForensicTool
             if (args.Length == 0 || !long.TryParse(args[0], NumberStyles.AllowHexSpecifier, NumberFormatInfo.InvariantInfo, out var flags))
                 flags = long.MaxValue & ~(long)CleanerTypes.QuickLaunchLnk & ~(long)CleanerTypes.StartMenuLnk; // disabled by default
 
-            File.WriteAllBytes("offreg.x86.dll", Resources.offreg_x86);
-            File.WriteAllBytes("offreg.x64.dll", Resources.offreg_x64);
+            Facade.ExtractOffRegLib();
 
             var logFile = Path.GetRandomFileName() + '.' + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss_ffff") + ".log";
             Console.WriteLine("Log: " + logFile);
@@ -53,8 +51,6 @@ namespace AntiForensicTool
             finally
             {
                 Console.WriteLine("Done");
-                FileUtils.EliminateSingleFile("offreg.x86.dll");
-                FileUtils.EliminateSingleFile("offreg.x64.dll");
                 Log.CloseAndFlush();
             }
         }

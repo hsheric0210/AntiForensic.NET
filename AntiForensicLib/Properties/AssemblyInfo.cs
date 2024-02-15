@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AntiForensicLib")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Removes all forensic piggy traces from your PC")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AntiForensicLib")]
+[assembly: AssemblyProduct("AntiForensic.NET")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

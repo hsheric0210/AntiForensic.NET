@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="OffregLib, Version=0.7.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OffregLib.0.7.2\lib\OffregLib.dll</HintPath>
@@ -51,7 +54,12 @@
     <Compile Include="LoggerProxy.cs" />
     <Compile Include="NullLoggerProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegUtils.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RegistryUtils.cs" />
     <Compile Include="ServiceUtils.cs" />
     <Compile Include="Windows\EventLog.cs" />
     <Compile Include="Windows\FileArtifact\ActivitiesCache.cs" />
@@ -90,12 +98,10 @@
     <None Include="Resources\offreg.x86.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="offreg.x64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="offreg.x86.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

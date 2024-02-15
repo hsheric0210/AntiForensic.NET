@@ -1,7 +1,9 @@
-﻿using AntiForensicLib.Windows;
+﻿using AntiForensicLib.Properties;
+using AntiForensicLib.Windows;
 using AntiForensicLib.Windows.FileArtifact;
 using AntiForensicLib.Windows.RegistryArtifacts;
 using System.Collections.Generic;
+using System.IO;
 
 namespace AntiForensicLib
 {
@@ -44,6 +46,12 @@ namespace AntiForensicLib
                 new EventLog(),
                 new UsnJrnl(),
             });
+        }
+
+        public static void ExtractOffRegLib()
+        {
+            File.WriteAllBytes("offreg.x86.dll", Resources.offreg_x86);
+            File.WriteAllBytes("offreg.x64.dll", Resources.offreg_x64);
         }
     }
 }

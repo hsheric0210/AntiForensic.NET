@@ -9,6 +9,6 @@ namespace AntiForensicLib.Windows.RegistryArtifacts
 
         public string Name => "Explorer Last-visited MRU";
 
-        public int RunCleaner() => RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "CurrentVersion", "Explorer", "ComDlg32", "LastVisitedPidlMRU")));
+        public int RunCleaner() => RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "CurrentVersion", "Explorer", "ComDlg32", "LastVisitedPidlMRU")));
     }
 }

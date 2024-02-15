@@ -1,5 +1,4 @@
-﻿using AntiForensicLib;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace AntiForensicLib.Windows
 {

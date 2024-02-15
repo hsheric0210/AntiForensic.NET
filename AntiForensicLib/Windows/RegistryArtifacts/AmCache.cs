@@ -1,5 +1,4 @@
-﻿using AntiForensicLib;
-using OffregLib;
+﻿using OffregLib;
 using System;
 using System.IO;
 

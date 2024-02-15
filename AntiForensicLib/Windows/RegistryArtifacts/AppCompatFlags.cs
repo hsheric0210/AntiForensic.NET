@@ -12,6 +12,6 @@ namespace AntiForensicLib.Windows.RegistryArtifacts
 
         public string Name => "Application Compatibility Flags (AppCompatFlags) Store";
 
-        public int RunCleaner() => RegUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows NT", "CurrentVersion", "AppCompatFlags", "Compatibility Assistant", "Store")));
+        public int RunCleaner() => RegistryUtils.EliminateKeySubentriesRecursive(Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows NT", "CurrentVersion", "AppCompatFlags", "Compatibility Assistant", "Store")));
     }
 }

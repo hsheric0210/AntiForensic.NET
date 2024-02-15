@@ -16,10 +16,10 @@ namespace AntiForensicLib.Windows.RegistryArtifacts
         {
             var count = 0;
             var featureUsage = Registry.CurrentUser.OpenSubKey(Path.Combine("Software", "Microsoft", "Windows", "CurrentVersion", "Explorer", "FeatureUsage"));
-            count += RegUtils.EliminateKeySubentries(featureUsage.OpenSubKey("AppBadgeUpdated"));
-            count += RegUtils.EliminateKeySubentries(featureUsage.OpenSubKey("AppLaunch"));
-            count += RegUtils.EliminateKeySubentries(featureUsage.OpenSubKey("AppSwitched"));
-            count += RegUtils.EliminateKeySubentries(featureUsage.OpenSubKey("ShowJumpView"));
+            count += RegistryUtils.EliminateKeySubentries(featureUsage.OpenSubKey("AppBadgeUpdated"));
+            count += RegistryUtils.EliminateKeySubentries(featureUsage.OpenSubKey("AppLaunch"));
+            count += RegistryUtils.EliminateKeySubentries(featureUsage.OpenSubKey("AppSwitched"));
+            count += RegistryUtils.EliminateKeySubentries(featureUsage.OpenSubKey("ShowJumpView"));
             return count;
         }
     }
