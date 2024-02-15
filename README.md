@@ -1,6 +1,10 @@
-# cisnerof :: Windows anti-forensics made easy
+# AntiForensic.NET :: Windows anti-forensics made easy
 
-This simple and lightweight utility will eliminate *all* logs from your computor.
+This simple and lightweight library and utility will help you eliminate *all* logs from your computor.
+
+Usage of this utility vary from just simply learning various anti-forensic technique to simply remove all usage traces from the PC to evade tracing.
+
+## Action
 
 Once executed, it will automatically erase:
 
@@ -46,5 +50,5 @@ TODO:
 
 ## Related repositories
 
-* https://github.com/LordMike/OffregLib
-* https://github.com/PaulNorman01/Forensia/blob/main/src/forensia/Source.cpp
+* OffregLib :: https://github.com/LordMike/OffregLib
+* Forensia :: https://github.com/PaulNorman01/Forensia/blob/main/src/forensia/Source.cpp

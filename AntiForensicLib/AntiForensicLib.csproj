@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D54A8B5F-C3FE-4F60-A671-784916F644FA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AntiForensicLib</RootNamespace>
+    <AssemblyName>AntiForensicLib</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OffregLib, Version=0.7.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OffregLib.0.7.2\lib\OffregLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CleanerTypes.cs" />
+    <Compile Include="Facade.cs" />
+    <Compile Include="FileUtils.cs" />
+    <Compile Include="ICleaner.cs" />
+    <Compile Include="LoggerProxy.cs" />
+    <Compile Include="NullLoggerProxy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegUtils.cs" />
+    <Compile Include="ServiceUtils.cs" />
+    <Compile Include="Windows\EventLog.cs" />
+    <Compile Include="Windows\FileArtifact\ActivitiesCache.cs" />
+    <Compile Include="Windows\FileArtifact\AppCompatInstall.cs" />
+    <Compile Include="Windows\FileArtifact\CrashDumps.cs" />
+    <Compile Include="Windows\FileArtifact\IconCache.cs" />
+    <Compile Include="Windows\FileArtifact\PCA.cs" />
+    <Compile Include="Windows\FileArtifact\Prefetch.cs" />
+    <Compile Include="Windows\FileArtifact\QuickLaunchLnk.cs" />
+    <Compile Include="Windows\FileArtifact\RecentFileCacheBcf.cs" />
+    <Compile Include="Windows\FileArtifact\RecentItems.cs" />
+    <Compile Include="Windows\FileArtifact\RecycleBin.cs" />
+    <Compile Include="Windows\FileArtifact\SearchIndex.cs" />
+    <Compile Include="Windows\FileArtifact\SRUM.cs" />
+    <Compile Include="Windows\FileArtifact\StartMenuLnk.cs" />
+    <Compile Include="Windows\FileArtifact\WER.cs" />
+    <Compile Include="Windows\RegistryArtifacts\AmCache.cs" />
+    <Compile Include="Windows\RegistryArtifacts\AppCompatCache.cs" />
+    <Compile Include="Windows\RegistryArtifacts\AppCompatFlags.cs" />
+    <Compile Include="Windows\RegistryArtifacts\BAM.cs" />
+    <Compile Include="Windows\RegistryArtifacts\FeatureUsage.cs" />
+    <Compile Include="Windows\RegistryArtifacts\LastVisitedMRU.cs" />
+    <Compile Include="Windows\RegistryArtifacts\MuiCache.cs" />
+    <Compile Include="Windows\RegistryArtifacts\OpenSaveMRU.cs" />
+    <Compile Include="Windows\RegistryArtifacts\RecentDocs.cs" />
+    <Compile Include="Windows\RegistryArtifacts\RunMRU.cs" />
+    <Compile Include="Windows\RegistryArtifacts\Shellbags.cs" />
+    <Compile Include="Windows\RegistryArtifacts\UserAssist.cs" />
+    <Compile Include="Windows\UsnJrnl.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Resources\offreg.x64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\offreg.x86.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="offreg.x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="offreg.x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
