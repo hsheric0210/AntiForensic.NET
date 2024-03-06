@@ -1,6 +1,10 @@
 # OffregLib
 A .NET wrapper for Microsoft's Offreg.dll
 
+## What's the difference between [Original OffregLib](https://github.com/LordMike/OffregLib) and this fork?
+
+This fork of the OffregLib project uses [StealthModule.NET](https://github.com/hsheric0210/StealthModule.NET) to load offreg.dll _dynamically_ in runtime.
+
 ## Purpose
 
 Almost [all versions of Windows](http://en.wikipedia.org/wiki/Windows_Registry "Windows Registry history") comes with a Registry. It's a common store for all kinds of settings, and is available in almost all languages via. some form of API. Internally, Windows stores these registries (LocalUser, LocalMachine etc.) in multiple "Registry Hive" files. Most of them are in: "C:\Windows\System32\Config".
