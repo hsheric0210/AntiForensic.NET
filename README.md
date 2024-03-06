@@ -1,5 +1,13 @@
 # AntiForensic.NET :: Windows anti-forensics made easy
 
+<div align="center">
+    <picture width="300px">
+        <source media="(prefers-color-scheme: dark)" width="300px" srcset="logo_white.png">
+        <source media="(prefers-color-scheme: light)" width="300px" srcset="logo_dark.png">
+        <img alt="AntiForensic.NET logo" width="300px" src="logo_dark.png">
+    </picture>
+</div>
+
 This simple and lightweight library and utility will help you eliminate *all* logs from your computor.
 
 Usage of this utility vary from just simply learning various anti-forensic technique to simply remove all usage traces from the PC to evade tracing.
@@ -52,3 +60,9 @@ TODO:
 
 * OffregLib :: https://github.com/LordMike/OffregLib
 * Forensia :: https://github.com/PaulNorman01/Forensia/blob/main/src/forensia/Source.cpp
+
+## Logo Attribution
+
+* broken glass by Nick Bluth from <a href="https://thenounproject.com/browse/icons/term/broken-glass/" target="_blank" title="broken glass Icons">Noun Project</a> (CC BY 3.0)
+
+* Magnifying Glass by DinosoftLabs from <a href="https://thenounproject.com/browse/icons/term/magnifying-glass/" target="_blank" title="Magnifying Glass Icons">Noun Project</a> (CC BY 3.0)
