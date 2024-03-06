@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiForensicTool", "AntiFor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiForensicLib", "AntiForensicLib\AntiForensicLib.csproj", "{D54A8B5F-C3FE-4F60-A671-784916F644FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OffregLib", "OffregLib\OffregLib.csproj", "{D4A23C6B-9990-4835-B2BF-60D6AA5BAEB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StealthModule", "StealthModule.NET\StealthModule\StealthModule.csproj", "{2EFC65A7-0B03-4905-8765-C66792D9F829}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{D54A8B5F-C3FE-4F60-A671-784916F644FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D54A8B5F-C3FE-4F60-A671-784916F644FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D54A8B5F-C3FE-4F60-A671-784916F644FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4A23C6B-9990-4835-B2BF-60D6AA5BAEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4A23C6B-9990-4835-B2BF-60D6AA5BAEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4A23C6B-9990-4835-B2BF-60D6AA5BAEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4A23C6B-9990-4835-B2BF-60D6AA5BAEB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EFC65A7-0B03-4905-8765-C66792D9F829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EFC65A7-0B03-4905-8765-C66792D9F829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EFC65A7-0B03-4905-8765-C66792D9F829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EFC65A7-0B03-4905-8765-C66792D9F829}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OffregLib.Properties;
+using StealthModule;
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
@@ -85,16 +87,113 @@ namespace OffregLib
     /// </summary>
     public static class OffregNative
     {
-        private static bool Is64BitProcess { get { return IntPtr.Size == 8; } }
+        private static MemoryModule offreg = null; // Prevent from being GC'd
 
-        private const string OffRegDllName32 = "offreg.x86.dll";
-        private const string OffRegDllName64 = "offreg.x64.dll";
+        private static void InitNative()
+        {
+            if (offreg != null)
+                return;
 
-        [DllImport(OffRegDllName32, EntryPoint = "ORCreateHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result CreateHive32(out IntPtr rootKeyHandle);
+            var dll = IntPtr.Size == 8 ? Resources.offreg_x64 : Resources.offreg_x86;
+            offreg = new MemoryModule(dll);
 
-        [DllImport(OffRegDllName64, EntryPoint = "ORCreateHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result CreateHive64(out IntPtr rootKeyHandle);
+            createHive = offreg.GetExport<CreateHiveDelegate>("ORCreateHive");
+            openHive = offreg.GetExport<OpenHiveDelegate>("OROpenHive");
+            closeHive = offreg.GetExport<CloseHiveDelegate>("ORCloseHive");
+            saveHive = offreg.GetExport<SaveHiveDelegate>("ORSaveHive");
+            closeKey = offreg.GetExport<CloseKeyDelegate>("ORCloseKey");
+            createKey = offreg.GetExport<CreateKeyDelegate>("ORCreateKey");
+            deleteKey = offreg.GetExport<DeleteKeyDelegate>("ORDeleteKey");
+            deleteValue = offreg.GetExport<DeleteValueDelegate>("ORDeleteValue");
+            enumKeyRef = offreg.GetExport<EnumKeyDelegate_ref>("OREnumKey");
+            enumKeyPtr = offreg.GetExport<EnumKeyDelegate_ptr>("OREnumKey");
+            enumValueRef = offreg.GetExport<EnumValueDelegate_ref>("OREnumValue");
+            enumValuePtr = offreg.GetExport<EnumValueDelegate_ptr>("OREnumValue");
+            getKeySecurity = offreg.GetExport<GetKeySecurityDelegate>("ORGetKeySecurity");
+            getValueRef = offreg.GetExport<GetValueDelegate_ref>("ORGetValue");
+            getValuePtr = offreg.GetExport<GetValueDelegate_ptr>("ORGetValue");
+            openKey = offreg.GetExport<OpenKeyDelegate>("OROpenKey");
+            queryInfoKey = offreg.GetExport<QueryInfoKeyDelegate>("ORQueryInfoKey");
+            setValue = offreg.GetExport<SetValueDelegate>("ORSetValue");
+            setKeySecurity = offreg.GetExport<SetKeySecurityDelegate>("ORSetKeySecurity");
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result CreateHiveDelegate(out IntPtr rootKeyHandle);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result OpenHiveDelegate(string path, out IntPtr rootKeyHandle);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result CloseHiveDelegate(IntPtr rootKeyHandle);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result SaveHiveDelegate(IntPtr rootKeyHandle, string path, uint dwOsMajorVersion, uint dwOsMinorVersion);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+        private delegate Win32Result CloseKeyDelegate(IntPtr hKey);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result CreateKeyDelegate(IntPtr hKey, string lpSubKey, string lpClass, RegOption dwOptions, /*ref SECURITY_DESCRIPTOR*/ IntPtr lpSecurityDescriptor, /*ref IntPtr*/ out IntPtr phkResult, out KeyDisposition lpdwDisposition);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result DeleteKeyDelegate(IntPtr hKey, string lpSubKey);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result DeleteValueDelegate(IntPtr hKey, string lpValueName);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result EnumKeyDelegate_ref(IntPtr hKey, uint dwIndex, StringBuilder lpName, ref uint lpcchName, StringBuilder lpClass, ref uint lpcchClass, ref FILETIME lpftLastWriteTime);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result EnumKeyDelegate_ptr(IntPtr hKey, uint dwIndex, StringBuilder lpName, ref uint lpcchName, StringBuilder lpClass, IntPtr lpcchClass, IntPtr lpftLastWriteTime);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result EnumValueDelegate_ref(IntPtr hKey, uint dwIndex, StringBuilder lpValueName, ref uint lpcchValueName, out RegValueType lpType, IntPtr lpData, ref uint lpcbData);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result EnumValueDelegate_ptr(IntPtr hKey, uint dwIndex, StringBuilder lpValueName, ref uint lpcchValueName, IntPtr lpType, IntPtr lpData, IntPtr lpcbData);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+        private delegate Win32Result GetKeySecurityDelegate(IntPtr hKey, SECURITY_INFORMATION securityInformation, IntPtr pSecurityDescriptor, ref uint lpcbSecurityDescriptor);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result GetValueDelegate_ref(IntPtr hKey, string lpSubKey, string lpValue, out RegValueType pdwType, IntPtr pvData, ref uint pcbData);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result GetValueDelegate_ptr(IntPtr hKey, string lpSubKey, string lpValue, out RegValueType pdwType, IntPtr pvData, IntPtr pcbData);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result OpenKeyDelegate(IntPtr hKey, string lpSubKey, out IntPtr phkResult);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result QueryInfoKeyDelegate(IntPtr hKey, StringBuilder lpClass, ref uint lpcchClass, ref uint lpcSubKeys, ref uint lpcbMaxSubKeyLen, ref uint lpcbMaxClassLen, ref uint lpcValues, ref uint lpcbMaxValueNameLen, ref uint lpcbMaxValueLen, ref uint lpcbSecurityDescriptor, ref FILETIME lpftLastWriteTime);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+        private delegate Win32Result SetValueDelegate(IntPtr hKey, string lpValueName, RegValueType dwType, IntPtr lpData, uint cbData);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+        private delegate Win32Result SetKeySecurityDelegate(IntPtr hKey, SECURITY_INFORMATION securityInformation, /*ref IntPtr*/ IntPtr pSecurityDescriptor);
+
+        private static CreateHiveDelegate createHive;
+        private static OpenHiveDelegate openHive;
+        private static CloseHiveDelegate closeHive;
+        private static SaveHiveDelegate saveHive;
+        private static CloseKeyDelegate closeKey;
+        private static CreateKeyDelegate createKey;
+        private static DeleteKeyDelegate deleteKey;
+        private static DeleteValueDelegate deleteValue;
+        private static EnumKeyDelegate_ref enumKeyRef;
+        private static EnumKeyDelegate_ptr enumKeyPtr;
+        private static EnumValueDelegate_ref enumValueRef;
+        private static EnumValueDelegate_ptr enumValuePtr;
+        private static GetKeySecurityDelegate getKeySecurity;
+        private static GetValueDelegate_ref getValueRef;
+        private static GetValueDelegate_ptr getValuePtr;
+        private static OpenKeyDelegate openKey;
+        private static QueryInfoKeyDelegate queryInfoKey;
+        private static SetValueDelegate setValue;
+        private static SetKeySecurityDelegate setKeySecurity;
 
         /// <summary>
         ///     Create a new Registry Hive
@@ -106,14 +205,11 @@ namespace OffregLib
         /// </returns>
         public static Win32Result CreateHive(out IntPtr rootKeyHandle)
         {
-            return Is64BitProcess ? CreateHive64(out rootKeyHandle) : CreateHive32(out rootKeyHandle);
+            if (createHive == null)
+                InitNative();
+
+            return createHive(out rootKeyHandle);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "OROpenHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result OpenHive32(string path, out IntPtr rootKeyHandle);
-
-        [DllImport(OffRegDllName64, EntryPoint = "OROpenHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result OpenHive64(string path, out IntPtr rootKeyHandle);
 
         /// <summary>
         ///     Open an existing Registry Hive
@@ -126,16 +222,11 @@ namespace OffregLib
         /// </returns>
         public static Win32Result OpenHive(string path, out IntPtr rootKeyHandle)
         {
-            return Is64BitProcess
-                       ? OpenHive64(path, out rootKeyHandle)
-                       : OpenHive32(path, out rootKeyHandle);
+            if (openHive == null)
+                InitNative();
+
+            return openHive(path, out rootKeyHandle);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORCloseHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result CloseHive32(IntPtr rootKeyHandle);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORCloseHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result CloseHive64(IntPtr rootKeyHandle);
 
         /// <summary>
         ///     Close an open hive, freeing ressources used by it.
@@ -151,22 +242,11 @@ namespace OffregLib
         /// </returns>
         public static Win32Result CloseHive(IntPtr rootKeyHandle)
         {
-            return Is64BitProcess ? CloseHive64(rootKeyHandle) : CloseHive32(rootKeyHandle);
+            if (closeHive == null)
+                InitNative();
+
+            return closeHive(rootKeyHandle);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORSaveHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result SaveHive32(
-            IntPtr rootKeyHandle,
-            string path,
-            uint dwOsMajorVersion,
-            uint dwOsMinorVersion);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORSaveHive", CharSet = CharSet.Unicode)]
-        private static extern Win32Result SaveHive64(
-            IntPtr rootKeyHandle,
-            string path,
-            uint dwOsMajorVersion,
-            uint dwOsMinorVersion);
 
         /// <summary>
         ///     Save an open hive to disk.
@@ -180,21 +260,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result SaveHive(IntPtr rootKeyHandle,
-                                           string path,
-                                           uint dwOsMajorVersion,
-                                           uint dwOsMinorVersion)
+        public static Win32Result SaveHive(IntPtr rootKeyHandle, string path, uint dwOsMajorVersion, uint dwOsMinorVersion)
         {
-            return Is64BitProcess
-                       ? SaveHive64(rootKeyHandle, path, dwOsMajorVersion, dwOsMinorVersion)
-                       : SaveHive32(rootKeyHandle, path, dwOsMajorVersion, dwOsMinorVersion);
+            if (saveHive == null)
+                InitNative();
+
+            return saveHive(rootKeyHandle, path, dwOsMajorVersion, dwOsMinorVersion);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORCloseKey")]
-        private static extern Win32Result CloseKey32(IntPtr hKey);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORCloseKey")]
-        private static extern Win32Result CloseKey64(IntPtr hKey);
 
         /// <summary>
         ///     Close an open key.
@@ -206,28 +278,11 @@ namespace OffregLib
         /// </returns>
         public static Win32Result CloseKey(IntPtr hKey)
         {
-            return Is64BitProcess ? CloseKey64(hKey) : CloseKey32(hKey);
+            if (closeKey == null)
+                InitNative();
+
+            return closeKey(hKey);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORCreateKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result CreateKey32(
-            IntPtr hKey,
-            string lpSubKey,
-            string lpClass,
-            RegOption dwOptions,
-            /*ref SECURITY_DESCRIPTOR*/ IntPtr lpSecurityDescriptor,
-            /*ref IntPtr*/ out IntPtr phkResult,
-            out KeyDisposition lpdwDisposition);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORCreateKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result CreateKey64(
-            IntPtr hKey,
-            string lpSubKey,
-            string lpClass,
-            RegOption dwOptions,
-            /*ref SECURITY_DESCRIPTOR*/ IntPtr lpSecurityDescriptor,
-            /*ref IntPtr*/ out IntPtr phkResult,
-            out KeyDisposition lpdwDisposition);
 
         /// <summary>
         ///     Create a new subkey (or open an existing one) under another key.
@@ -243,30 +298,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result CreateKey(IntPtr hKey,
-                                            string lpSubKey,
-                                            string lpClass,
-                                            RegOption dwOptions,
-            /*ref SECURITY_DESCRIPTOR*/ IntPtr lpSecurityDescriptor,
-            /*ref IntPtr*/ out IntPtr phkResult,
-                                            out KeyDisposition lpdwDisposition)
+        public static Win32Result CreateKey(IntPtr hKey, string lpSubKey, string lpClass, RegOption dwOptions, /*ref SECURITY_DESCRIPTOR*/ IntPtr lpSecurityDescriptor, /*ref IntPtr*/ out IntPtr phkResult, out KeyDisposition lpdwDisposition)
         {
-            return Is64BitProcess
-                       ? CreateKey64(hKey, lpSubKey, lpClass, dwOptions, lpSecurityDescriptor, out phkResult,
-                                     out lpdwDisposition)
-                       : CreateKey32(hKey, lpSubKey, lpClass, dwOptions, lpSecurityDescriptor, out phkResult,
-                                     out lpdwDisposition);
+            if (createKey == null)
+                InitNative();
+
+            return createKey(hKey, lpSubKey, lpClass, dwOptions, lpSecurityDescriptor, out phkResult, out lpdwDisposition);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORDeleteKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result DeleteKey32(
-            IntPtr hKey,
-            string lpSubKey);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORDeleteKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result DeleteKey64(
-            IntPtr hKey,
-            string lpSubKey);
 
         /// <summary>
         ///     Delete a subkey.
@@ -277,21 +315,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result DeleteKey(IntPtr hKey,
-                                            string lpSubKey)
+        public static Win32Result DeleteKey(IntPtr hKey, string lpSubKey)
         {
-            return Is64BitProcess ? DeleteKey64(hKey, lpSubKey) : DeleteKey32(hKey, lpSubKey);
+            if (deleteKey == null)
+                InitNative();
+
+            return deleteKey(hKey, lpSubKey);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORDeleteValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result DeleteValue32(
-            IntPtr hKey,
-            string lpValueName);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORDeleteValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result DeleteValue64(
-            IntPtr hKey,
-            string lpValueName);
 
         /// <summary>
         ///     Delete a value under a key.
@@ -302,31 +332,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result DeleteValue(IntPtr hKey,
-                                              string lpValueName)
+        public static Win32Result DeleteValue(IntPtr hKey, string lpValueName)
         {
-            return Is64BitProcess ? DeleteValue64(hKey, lpValueName) : DeleteValue32(hKey, lpValueName);
+            if (deleteValue == null)
+                InitNative();
+
+            return deleteValue(hKey, lpValueName);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "OREnumKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumKey32(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpName,
-            ref uint lpcchName,
-            StringBuilder lpClass,
-            ref uint lpcchClass,
-            ref FILETIME lpftLastWriteTime);
-
-        [DllImport(OffRegDllName64, EntryPoint = "OREnumKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumKey64(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpName,
-            ref uint lpcchName,
-            StringBuilder lpClass,
-            ref uint lpcchClass,
-            ref FILETIME lpftLastWriteTime);
 
         /// <summary>
         ///     Enumerate keys under a parent.
@@ -342,38 +354,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success, Win32Result.ERROR_NO_MORE_ITEMS indicates that no more childs exist.
         /// </returns>
-        public static Win32Result EnumKey(IntPtr hKey,
-                                          uint dwIndex,
-                                          StringBuilder lpName,
-                                          ref uint lpcchName,
-                                          StringBuilder lpClass,
-                                          ref uint lpcchClass,
-                                          ref FILETIME lpftLastWriteTime)
+        public static Win32Result EnumKey(IntPtr hKey, uint dwIndex, StringBuilder lpName, ref uint lpcchName, StringBuilder lpClass, ref uint lpcchClass, ref FILETIME lpftLastWriteTime)
         {
-            return Is64BitProcess
-                       ? EnumKey64(hKey, dwIndex, lpName, ref lpcchName, lpClass, ref lpcchClass, ref lpftLastWriteTime)
-                       : EnumKey32(hKey, dwIndex, lpName, ref lpcchName, lpClass, ref lpcchClass, ref lpftLastWriteTime);
+            if (enumKeyRef == null)
+                InitNative();
+
+            return enumKeyRef(hKey, dwIndex, lpName, ref lpcchName, lpClass, ref lpcchClass, ref lpftLastWriteTime);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "OREnumKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumKey32(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpName,
-            ref uint lpcchName,
-            StringBuilder lpClass,
-            IntPtr lpcchClass,
-            IntPtr lpftLastWriteTime);
-
-        [DllImport(OffRegDllName64, EntryPoint = "OREnumKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumKey64(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpName,
-            ref uint lpcchName,
-            StringBuilder lpClass,
-            IntPtr lpcchClass,
-            IntPtr lpftLastWriteTime);
 
         /// <summary>
         ///     Enumerate keys under a parent.
@@ -389,38 +376,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success, Win32Result.ERROR_NO_MORE_ITEMS indicates that no more childs exist.
         /// </returns>
-        public static Win32Result EnumKey(IntPtr hKey,
-                                          uint dwIndex,
-                                          StringBuilder lpName,
-                                          ref uint lpcchName,
-                                          StringBuilder lpClass,
-                                          IntPtr lpcchClass,
-                                          IntPtr lpftLastWriteTime)
+        public static Win32Result EnumKey(IntPtr hKey, uint dwIndex, StringBuilder lpName, ref uint lpcchName, StringBuilder lpClass, IntPtr lpcchClass, IntPtr lpftLastWriteTime)
         {
-            return Is64BitProcess
-                       ? EnumKey64(hKey, dwIndex, lpName, ref lpcchName, lpClass, lpcchClass, lpftLastWriteTime)
-                       : EnumKey32(hKey, dwIndex, lpName, ref lpcchName, lpClass, lpcchClass, lpftLastWriteTime);
+            if (enumKeyPtr == null)
+                InitNative();
+
+            return enumKeyPtr(hKey, dwIndex, lpName, ref lpcchName, lpClass, lpcchClass, lpftLastWriteTime);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "OREnumValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumValue32(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpValueName,
-            ref uint lpcchValueName,
-            out RegValueType lpType,
-            IntPtr lpData,
-            ref uint lpcbData);
-
-        [DllImport(OffRegDllName64, EntryPoint = "OREnumValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumValue64(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpValueName,
-            ref uint lpcchValueName,
-            out RegValueType lpType,
-            IntPtr lpData,
-            ref uint lpcbData);
 
         /// <summary>
         ///     Enumerate a keys values.
@@ -436,38 +398,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result EnumValue(IntPtr hKey,
-                                            uint dwIndex,
-                                            StringBuilder lpValueName,
-                                            ref uint lpcchValueName,
-                                            out RegValueType lpType,
-                                            IntPtr lpData,
-                                            ref uint lpcbData)
+        public static Win32Result EnumValue(IntPtr hKey, uint dwIndex, StringBuilder lpValueName, ref uint lpcchValueName, out RegValueType lpType, IntPtr lpData, ref uint lpcbData)
         {
-            return Is64BitProcess
-                       ? EnumValue64(hKey, dwIndex, lpValueName, ref lpcchValueName, out lpType, lpData, ref lpcbData)
-                       : EnumValue32(hKey, dwIndex, lpValueName, ref lpcchValueName, out lpType, lpData, ref lpcbData);
+            if (enumValueRef == null)
+                InitNative();
+
+            return enumValueRef(hKey, dwIndex, lpValueName, ref lpcchValueName, out lpType, lpData, ref lpcbData);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "OREnumValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumValue32(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpValueName,
-            ref uint lpcchValueName,
-            IntPtr lpType,
-            IntPtr lpData,
-            IntPtr lpcbData);
-
-        [DllImport(OffRegDllName64, EntryPoint = "OREnumValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result EnumValue64(
-            IntPtr hKey,
-            uint dwIndex,
-            StringBuilder lpValueName,
-            ref uint lpcchValueName,
-            IntPtr lpType,
-            IntPtr lpData,
-            IntPtr lpcbData);
 
         /// <summary>
         ///     Enumerate a keys values.
@@ -483,32 +420,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result EnumValue(IntPtr hKey,
-                                            uint dwIndex,
-                                            StringBuilder lpValueName,
-                                            ref uint lpcchValueName,
-                                            IntPtr lpType,
-                                            IntPtr lpData,
-                                            IntPtr lpcbData)
+        public static Win32Result EnumValue(IntPtr hKey, uint dwIndex, StringBuilder lpValueName, ref uint lpcchValueName, IntPtr lpType, IntPtr lpData, IntPtr lpcbData)
         {
-            return Is64BitProcess
-                       ? EnumValue64(hKey, dwIndex, lpValueName, ref lpcchValueName, lpType, lpData, lpcbData)
-                       : EnumValue32(hKey, dwIndex, lpValueName, ref lpcchValueName, lpType, lpData, lpcbData);
+            if (enumValuePtr == null)
+                InitNative();
+
+            return enumValuePtr(hKey, dwIndex, lpValueName, ref lpcchValueName, lpType, lpData, lpcbData);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORGetKeySecurity")]
-        private static extern Win32Result GetKeySecurity32(
-            IntPtr hKey,
-            SECURITY_INFORMATION securityInformation,
-            IntPtr pSecurityDescriptor,
-            ref uint lpcbSecurityDescriptor);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORGetKeySecurity")]
-        private static extern Win32Result GetKeySecurity64(
-            IntPtr hKey,
-            SECURITY_INFORMATION securityInformation,
-            IntPtr pSecurityDescriptor,
-            ref uint lpcbSecurityDescriptor);
 
         /// <summary>
         ///     Gets a keys security descriptor.
@@ -521,33 +439,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result GetKeySecurity(IntPtr hKey,
-                                                 SECURITY_INFORMATION securityInformation,
-                                                 IntPtr pSecurityDescriptor,
-                                                 ref uint lpcbSecurityDescriptor)
+        public static Win32Result GetKeySecurity(IntPtr hKey, SECURITY_INFORMATION securityInformation, IntPtr pSecurityDescriptor, ref uint lpcbSecurityDescriptor)
         {
-            return Is64BitProcess
-                       ? GetKeySecurity64(hKey, securityInformation, pSecurityDescriptor, ref lpcbSecurityDescriptor)
-                       : GetKeySecurity32(hKey, securityInformation, pSecurityDescriptor, ref lpcbSecurityDescriptor);
+            if (getKeySecurity == null)
+                InitNative();
+
+            return getKeySecurity(hKey, securityInformation, pSecurityDescriptor, ref lpcbSecurityDescriptor);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORGetValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result GetValue32(
-            IntPtr hKey,
-            string lpSubKey,
-            string lpValue,
-            out RegValueType pdwType,
-            IntPtr pvData,
-            ref uint pcbData);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORGetValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result GetValue64(
-            IntPtr hKey,
-            string lpSubKey,
-            string lpValue,
-            out RegValueType pdwType,
-            IntPtr pvData,
-            ref uint pcbData);
 
         /// <summary>
         ///     Gets a value under a key.
@@ -562,35 +460,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result GetValue(IntPtr hKey,
-                                           string lpSubKey,
-                                           string lpValue,
-                                           out RegValueType pdwType,
-                                           IntPtr pvData,
-                                           ref uint pcbData)
+        public static Win32Result GetValue(IntPtr hKey, string lpSubKey, string lpValue, out RegValueType pdwType, IntPtr pvData, ref uint pcbData)
         {
-            return Is64BitProcess
-                       ? GetValue64(hKey, lpSubKey, lpValue, out pdwType, pvData, ref pcbData)
-                       : GetValue32(hKey, lpSubKey, lpValue, out pdwType, pvData, ref pcbData);
+            if (getValueRef == null)
+                InitNative();
+
+            return getValueRef(hKey, lpSubKey, lpValue, out pdwType, pvData, ref pcbData);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORGetValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result GetValue32(
-            IntPtr hKey,
-            string lpSubKey,
-            string lpValue,
-            out RegValueType pdwType,
-            IntPtr pvData,
-            IntPtr pcbData);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORGetValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result GetValue64(
-            IntPtr hKey,
-            string lpSubKey,
-            string lpValue,
-            out RegValueType pdwType,
-            IntPtr pvData,
-            IntPtr pcbData);
 
         /// <summary>
         ///     Gets a value under a key.
@@ -605,29 +481,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result GetValue(IntPtr hKey,
-                                           string lpSubKey,
-                                           string lpValue,
-                                           out RegValueType pdwType,
-                                           IntPtr pvData,
-                                           IntPtr pcbData)
+        public static Win32Result GetValue(IntPtr hKey, string lpSubKey, string lpValue, out RegValueType pdwType, IntPtr pvData, IntPtr pcbData)
         {
-            return Is64BitProcess
-                       ? GetValue64(hKey, lpSubKey, lpValue, out pdwType, pvData, pcbData)
-                       : GetValue32(hKey, lpSubKey, lpValue, out pdwType, pvData, pcbData);
+            if (getValuePtr == null)
+                InitNative();
+
+            return getValuePtr(hKey, lpSubKey, lpValue, out pdwType, pvData, pcbData);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "OROpenKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result OpenKey32(
-            IntPtr hKey,
-            string lpSubKey,
-            out IntPtr phkResult);
-
-        [DllImport(OffRegDllName64, EntryPoint = "OROpenKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result OpenKey64(
-            IntPtr hKey,
-            string lpSubKey,
-            out IntPtr phkResult);
 
         /// <summary>
         ///     Open a subkey.
@@ -639,42 +499,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result OpenKey(IntPtr hKey,
-                                          string lpSubKey,
-                                          out IntPtr phkResult)
+        public static Win32Result OpenKey(IntPtr hKey, string lpSubKey, out IntPtr phkResult)
         {
-            return Is64BitProcess
-                       ? OpenKey64(hKey, lpSubKey, out phkResult)
-                       : OpenKey32(hKey, lpSubKey, out phkResult);
+            if (openKey == null)
+                InitNative();
+
+            return openKey(hKey, lpSubKey, out phkResult);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORQueryInfoKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result QueryInfoKey32(
-            IntPtr hKey,
-            StringBuilder lpClass,
-            ref uint lpcchClass,
-            ref uint lpcSubKeys,
-            ref uint lpcbMaxSubKeyLen,
-            ref uint lpcbMaxClassLen,
-            ref uint lpcValues,
-            ref uint lpcbMaxValueNameLen,
-            ref uint lpcbMaxValueLen,
-            ref uint lpcbSecurityDescriptor,
-            ref FILETIME lpftLastWriteTime);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORQueryInfoKey", CharSet = CharSet.Unicode)]
-        private static extern Win32Result QueryInfoKey64(
-            IntPtr hKey,
-            StringBuilder lpClass,
-            ref uint lpcchClass,
-            ref uint lpcSubKeys,
-            ref uint lpcbMaxSubKeyLen,
-            ref uint lpcbMaxClassLen,
-            ref uint lpcValues,
-            ref uint lpcbMaxValueNameLen,
-            ref uint lpcbMaxValueLen,
-            ref uint lpcbSecurityDescriptor,
-            ref FILETIME lpftLastWriteTime);
 
         /// <summary>
         ///     Query details about a key.
@@ -694,42 +525,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result QueryInfoKey(IntPtr hKey,
-                                               StringBuilder lpClass,
-                                               ref uint lpcchClass,
-                                               ref uint lpcSubKeys,
-                                               ref uint lpcbMaxSubKeyLen,
-                                               ref uint lpcbMaxClassLen,
-                                               ref uint lpcValues,
-                                               ref uint lpcbMaxValueNameLen,
-                                               ref uint lpcbMaxValueLen,
-                                               ref uint lpcbSecurityDescriptor,
-                                               ref FILETIME lpftLastWriteTime)
+        public static Win32Result QueryInfoKey(IntPtr hKey, StringBuilder lpClass, ref uint lpcchClass, ref uint lpcSubKeys, ref uint lpcbMaxSubKeyLen, ref uint lpcbMaxClassLen, ref uint lpcValues, ref uint lpcbMaxValueNameLen, ref uint lpcbMaxValueLen, ref uint lpcbSecurityDescriptor, ref FILETIME lpftLastWriteTime)
         {
-            return Is64BitProcess
-                       ? QueryInfoKey64(hKey, lpClass, ref lpcchClass, ref lpcSubKeys, ref lpcbMaxSubKeyLen,
-                                        ref lpcbMaxClassLen, ref lpcValues, ref lpcbMaxValueNameLen, ref lpcbMaxValueLen,
-                                        ref lpcbSecurityDescriptor, ref lpftLastWriteTime)
-                       : QueryInfoKey32(hKey, lpClass, ref lpcchClass, ref lpcSubKeys, ref lpcbMaxSubKeyLen,
-                                        ref lpcbMaxClassLen, ref lpcValues, ref lpcbMaxValueNameLen, ref lpcbMaxValueLen,
-                                        ref lpcbSecurityDescriptor, ref lpftLastWriteTime);
+            if (queryInfoKey == null)
+                InitNative();
+
+            return queryInfoKey(hKey, lpClass, ref lpcchClass, ref lpcSubKeys, ref lpcbMaxSubKeyLen, ref lpcbMaxClassLen, ref lpcValues, ref lpcbMaxValueNameLen, ref lpcbMaxValueLen, ref lpcbSecurityDescriptor, ref lpftLastWriteTime);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORSetValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result SetValue32(
-            IntPtr hKey,
-            string lpValueName,
-            RegValueType dwType,
-            IntPtr lpData,
-            uint cbData);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORSetValue", CharSet = CharSet.Unicode)]
-        private static extern Win32Result SetValue64(
-            IntPtr hKey,
-            string lpValueName,
-            RegValueType dwType,
-            IntPtr lpData,
-            uint cbData);
 
         /// <summary>
         ///     Sets a value.
@@ -743,28 +545,13 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result SetValue(IntPtr hKey,
-                                           string lpValueName,
-                                           RegValueType dwType,
-                                           IntPtr lpData,
-                                           uint cbData)
+        public static Win32Result SetValue(IntPtr hKey, string lpValueName, RegValueType dwType, IntPtr lpData, uint cbData)
         {
-            return Is64BitProcess
-                       ? SetValue64(hKey, lpValueName, dwType, lpData, cbData)
-                       : SetValue32(hKey, lpValueName, dwType, lpData, cbData);
+            if (setValue == null)
+                InitNative();
+
+            return setValue(hKey, lpValueName, dwType, lpData, cbData);
         }
-
-        [DllImport(OffRegDllName32, EntryPoint = "ORSetKeySecurity")]
-        private static extern Win32Result SetKeySecurity32(
-            IntPtr hKey,
-            SECURITY_INFORMATION securityInformation,
-            /*ref IntPtr*/ IntPtr pSecurityDescriptor);
-
-        [DllImport(OffRegDllName64, EntryPoint = "ORSetKeySecurity")]
-        private static extern Win32Result SetKeySecurity64(
-            IntPtr hKey,
-            SECURITY_INFORMATION securityInformation,
-            /*ref IntPtr*/ IntPtr pSecurityDescriptor);
 
         /// <summary>
         ///     Sets a keys security descriptor.
@@ -776,13 +563,12 @@ namespace OffregLib
         /// <returns>
         ///     <see cref="Win32Result" /> of the result. Win32Result.ERROR_SUCCESS indicates success.
         /// </returns>
-        public static Win32Result SetKeySecurity(IntPtr hKey,
-                                                 SECURITY_INFORMATION securityInformation,
-            /*ref IntPtr*/ IntPtr pSecurityDescriptor)
+        public static Win32Result SetKeySecurity(IntPtr hKey, SECURITY_INFORMATION securityInformation, /*ref IntPtr*/ IntPtr pSecurityDescriptor)
         {
-            return Is64BitProcess
-                       ? SetKeySecurity64(hKey, securityInformation, pSecurityDescriptor)
-                       : SetKeySecurity32(hKey, securityInformation, pSecurityDescriptor);
+            if (setKeySecurity == null)
+                InitNative();
+
+            return setKeySecurity(hKey, securityInformation, pSecurityDescriptor);
         }
     }
 }
