@@ -1,0 +1,3 @@
+[submodule "StealthModule.NET"]
+	path = StealthModule.NET
+	url = https://github.com/hsheric0210/StealthModule.NET
